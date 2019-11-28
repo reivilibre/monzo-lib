@@ -1,5 +1,5 @@
 use crate::{endpoints::handle_response, Result};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 /// A request to create a new basic feed item.
 ///
@@ -121,8 +121,9 @@ impl<'a> Request<'a> {
 
     /// Consume the request and return a future which will resolve when the feed
     /// item is posted
-    pub async fn send(self) -> Result<serde_json::Value> {
-        handle_response(self.reqwest_builder.form(&self.payload)).await
+    pub async fn send(self) -> Result<()> {
+        let _: Empty = handle_response(self.reqwest_builder.form(&self.payload)).await?;
+        Ok(())
     }
 }
 
@@ -138,3 +139,30 @@ pub struct Payload<'a> {
     #[serde(flatten)]
     params: Params<'a>,
 }
+
+#[derive(Debug, Deserialize)]
+struct Empty;
+
+use crate::IntoFuture;
+use std::{future::Future, pin::Pin};
+
+impl<'a> IntoFuture for Request<'a> {
+    type Output = Result<()>;
+    type Future = Pin<Box<dyn Future<Output = Self::Output> + 'a>>;
+    fn into_future(self) -> Self::Future {
+        Box::pin(self.send())
+    }
+}
+
+/*
+
+// this should be possible, but isn't working because of an upstream bug - https://github.com/rust-lang/rust/issues/57188
+impl<'a> IntoFuture for Request<'a> {
+    type Output = Result<()>;
+    type Future = impl Future<Output = Self::Output> + 'a;
+    fn into_future(self) -> Self::Future {
+        self.send()
+    }
+}
+
+*/

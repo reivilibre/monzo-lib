@@ -61,3 +61,14 @@ impl Refresh {
         handle_response(self.reqwest_builder).await
     }
 }
+
+use crate::IntoFuture;
+use std::future::Future;
+
+impl IntoFuture for Refresh {
+    type Output = Result<RefreshResponse>;
+    type Future = impl Future<Output = Self::Output>;
+    fn into_future(self) -> Self::Future {
+        self.send()
+    }
+}

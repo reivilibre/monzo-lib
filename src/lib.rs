@@ -55,5 +55,8 @@ pub use endpoints::{accounts, auth, balance, feed_items, pots, transactions};
 mod error;
 pub use self::error::Error;
 
+mod into_future;
+pub use into_future::IntoFuture;
+
 /// Result type for all methods in this crate which can fail.
 pub type Result<T> = std::result::Result<T, Error>;

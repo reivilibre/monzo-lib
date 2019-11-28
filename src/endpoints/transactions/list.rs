@@ -91,3 +91,28 @@ struct Payload<'a> {
     #[serde(rename = "expand[]")]
     expand_merchant: Option<&'a str>,
 }
+
+use crate::IntoFuture;
+use std::future::Future;
+use std::pin::Pin;
+
+impl<'a> IntoFuture for Request<'a> {
+    type Output = Result<Vec<Transaction>>;
+    type Future = Pin<Box<dyn Future<Output = Self::Output> + 'a>>;
+    fn into_future(self) -> Self::Future {
+        Box::pin(self.send())
+    }
+}
+
+/*
+
+// this should be possible, but isn't working because of an upstream bug - https://github.com/rust-lang/rust/issues/57188
+impl<'a> IntoFuture for Request<'a> {
+    type Output = Result<Vec<Transaction>>;
+    type Future = impl Future<Output = Self::Output> + 'a;
+    fn into_future(self) -> Self::Future {
+        self.send()
+    }
+}
+
+*/

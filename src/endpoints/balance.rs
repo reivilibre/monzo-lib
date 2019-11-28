@@ -85,4 +85,30 @@ mod get {
             .await
         }
     }
+
+    use crate::IntoFuture;
+    use std::{future::Future, pin::Pin};
+
+    impl<'a> IntoFuture for Request<'a> {
+        type Output = Result<Balance>;
+        type Future = Pin<Box<dyn Future<Output = Self::Output> + 'a>>;
+        fn into_future(self) -> Self::Future {
+            Box::pin(handle_response(
+                self.reqwest_builder
+                    .query(&[("account_id", self.account_id)]),
+            ))
+        }
+    }
+
+    /*     // this should be possible, but isn't working because of an upstream bug - https://github.com/rust-lang/rust/issues/57188
+    impl<'a> IntoFuture for Request<'a> {
+        type Output = Result<Balance>;
+        type Future = impl Future<Output = Self::Output> + 'a;
+        fn into_future(self) -> Self::Future {
+            handle_response(
+                self.reqwest_builder
+                    .query(&[("account_id", self.account_id)]),
+            )
+        }
+    } */
 }

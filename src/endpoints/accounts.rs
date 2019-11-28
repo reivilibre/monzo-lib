@@ -72,4 +72,14 @@ mod list {
                 .map(|accounts: Accounts| accounts.accounts)
         }
     }
+    use crate::IntoFuture;
+use std::future::Future;
+
+impl IntoFuture for Request {
+    type Output = Result<Vec<Account>>;
+    type Future = impl Future<Output = Self::Output>;
+    fn into_future(self) -> Self::Future {
+        self.send()
+    }
+}
 }

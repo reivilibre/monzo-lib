@@ -29,3 +29,14 @@ impl Request {
 pub struct Pots {
     pots: Vec<Pot>,
 }
+
+use crate::IntoFuture;
+use std::future::Future;
+
+impl IntoFuture for Request {
+    type Output = Result<Vec<Pot>>;
+    type Future = impl Future<Output = Self::Output>;
+    fn into_future(self) -> Self::Future {
+        self.send()
+    }
+}
