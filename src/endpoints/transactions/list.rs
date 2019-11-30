@@ -33,14 +33,6 @@ impl<'a> Request<'a> {
         }
     }
 
-    /// Consume the request and return a future that resolves to a List of
-    /// Transactions
-    pub async fn send(self) -> Result<Vec<Transaction>> {
-        let Response { transactions } =
-            handle_response(self.reqwest_builder.form(&self.payload)).await?;
-        Ok(transactions)
-    }
-
     /// Only return transactions which occurred after the given `DateTime`
     pub fn since(mut self, datetime: DateTime<Utc>) -> Self {
         self.payload.pagination.since = Some(Since::Timestamp(datetime));
@@ -73,6 +65,14 @@ impl<'a> Request<'a> {
         self.payload.expand_merchant = Some("merchant");
         self
     }
+
+        /// Consume the request and return a future that resolves to a List of
+    /// Transactions
+    pub async fn send(self) -> Result<Vec<Transaction>> {
+        let Response { transactions } =
+            handle_response(self.reqwest_builder.form(&self.payload)).await?;
+        Ok(transactions)
+    }
 }
 
 #[derive(Deserialize, Debug)]
@@ -93,8 +93,7 @@ struct Payload<'a> {
 }
 
 use crate::IntoFuture;
-use std::future::Future;
-use std::pin::Pin;
+use std::{future::Future, pin::Pin};
 
 impl<'a> IntoFuture for Request<'a> {
     type Output = Result<Vec<Transaction>>;
