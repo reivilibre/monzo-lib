@@ -1,23 +1,7 @@
-use crate::{
-    client::{quick::Client as QuickClient, refreshable::Client as RefreshableClient},
-    endpoints::{accounts, balance, feed_items, pots, transactions},
-};
+use crate::endpoints::{accounts, balance, feed_items, pots, transactions};
 
 /// This trait defines the shared behaviour of the client objects
 pub trait MonzoClient {
-    fn quick(access_token: impl Into<String>) -> QuickClient {
-        QuickClient::new(access_token)
-    }
-
-    fn refreshable(
-        access_token: impl Into<String>,
-        client_id: impl Into<String>,
-        client_secret: impl Into<String>,
-        refresh_token: impl Into<String>,
-    ) -> RefreshableClient {
-        RefreshableClient::new(access_token, client_id, client_secret, refresh_token)
-    }
-
     /// Return a reference to the current access token
     #[must_use]
     fn access_token(&self) -> &String;

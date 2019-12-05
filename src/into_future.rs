@@ -1,6 +1,6 @@
 use std::future::Future;
 
-/// Placeholder trait- waiting on the IntoFuture to stabilise.
+/// Placeholder trait- waiting on the `IntoFuture` to stabilise.
 /// This replaces the `send()` method currently used to turn requests into
 /// futures. in future, `await` will desugar into `into_future().await` which
 /// allow us to `await` the requests directly.

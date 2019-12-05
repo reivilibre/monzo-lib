@@ -8,7 +8,7 @@ use reqwest::Client as HttpClient;
 /// This client is not capable of refreshing the access token, hence this must
 /// be managed externally.
 ///
-/// For a full list of client functionality, see the [MonzoClient] trait
+/// For a full list of client functionality, see the `[MonzoClient]` trait
 #[must_use]
 pub struct Client {
     http_client: HttpClient,

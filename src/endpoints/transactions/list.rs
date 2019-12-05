@@ -66,7 +66,7 @@ impl<'a> Request<'a> {
         self
     }
 
-        /// Consume the request and return a future that resolves to a List of
+    /// Consume the request and return a future that resolves to a List of
     /// Transactions
     pub async fn send(self) -> Result<Vec<Transaction>> {
         let Response { transactions } =

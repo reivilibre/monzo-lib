@@ -9,7 +9,7 @@ use crate::{
 /// This client can refresh it's own access token if it expires
 /// See the individual methods for descriptions of the API endpoints.
 ///
-/// For a full list of client functionality, see the [MonzoClient] trait
+/// For a full list of client functionality, see the `[MonzoClient]` trait
 #[must_use]
 pub struct Client {
     quick_client: QuickClient,
